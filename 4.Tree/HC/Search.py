@@ -4,9 +4,13 @@ search_cadidates = ["as", "ase", "asc", "asde", "ascff", "asced","b","bf"]
 search_dict: Dict[str, dict | str | None] = {}
 
 
-def dict_builder(tree_as_dic: dict, char_set: str, i: int, char_set_len: int) -> None: 
+def dict_builder(tree_as_dic: dict, 
+                 char_set: str, 
+                 i: int, 
+                 char_set_len: int) -> None: 
     # base case
     if i > char_set_len - 1:
+        tree_as_dic[None]=-1
         return
     assert isinstance(tree_as_dic, dict)
     cur_char = char_set[i]
@@ -23,19 +27,24 @@ for cur_char in search_cadidates: #O(nk) where n is len(words) k = char in word
 
 print(search_dict)
 
-def dict_finder(cur_dict,cur_key,agg_char="",agg=[]):
+def dict_finder(cur_dict,cur_key,agg_char,agg=[]):
     """
     tail recursion
     """
-    if len(cur_dict) == 0:
-        agg.append(agg_char)
-        return
-    agg_char += cur_key
-    for next_dict in cur_dict:
-        print(next_dict)
+    try:
+        next_dict = cur_dict[cur_key]
+        for k,_ in next_dict.items():
+            if k is None:
+                agg.append(agg_char)
+            else:
+                dict_finder(next_dict,k,agg_char+k,agg)
+    except KeyError:
+        # base case
+        return agg_char
+
+    
     return agg
 
 
-test = dict_finder(search_dict,"a")
+test = dict_finder(search_dict,"a","a")
 print(test)
-
